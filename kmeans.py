@@ -7,7 +7,7 @@ from sklearn.metrics import silhouette_score
 import matplotlib.pyplot as plt
 
 # Cargar el dataset
-url = 'https://raw.githubusercontent.com/saikr789/Bank-Customer-Segmentation/master/Data.csv'
+url = 'bank_transactions.csv'
 data = pd.read_csv(url)
 
 # Preprocesamiento
