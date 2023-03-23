@@ -5,7 +5,10 @@
 - Jessica Ortiz
 - Rebecca Smith
 - Andrea Lam
-
+## Files
+Los archivos importantes son:
+- main.py
+- Task1_1.py
 ## Task 1
 ### Exploracion de datos
 

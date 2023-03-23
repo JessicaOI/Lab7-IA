@@ -4,9 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 
-# Carga del dataset
-data = pd.read_csv('bank_transactions.csv')
-#print(data.head()) 
+
 
 
 class KMeans:
@@ -104,30 +102,52 @@ class KMeans:
     def set_n_clusters(self, k):
         self.n_clusters = k
 
-# Eliminación de la columna de categoría, porque la columna TransactionID y CustumerID no tienen datos relevantes al analisis de datos.
-data = data.drop('TransactionID', axis=1)
-data = data.drop('CustomerID', axis=1)
-data = data.drop('CustomerDOB', axis =  1)
+def data_explore():
+    # Carga del dataset
+    data = pd.read_csv('bank_transactions.csv')
+    # Eliminación de la columna de categoría, porque la columna TransactionID y CustumerID no tienen datos relevantes al analisis de datos.
+    data = data.drop('TransactionID', axis=1)
+    data = data.drop('CustomerID', axis=1)
+    data = data.drop('CustomerDOB', axis =  1)
 
 
-""" # Convertir las columnas 'CustomerDOB' y 'TransactionDate' a valores numéricos
-data['CustomerDOB'] = pd.to_datetime(data['CustomerDOB'], format='%d/%m/%Y', errors='coerce')
-data['CustomerDOB'] = data['CustomerDOB'].fillna(0).apply(lambda x: x.toordinal()) """
+    """ # Convertir las columnas 'CustomerDOB' y 'TransactionDate' a valores numéricos
+    data['CustomerDOB'] = pd.to_datetime(data['CustomerDOB'], format='%d/%m/%Y', errors='coerce')
+    data['CustomerDOB'] = data['CustomerDOB'].fillna(0).apply(lambda x: x.toordinal()) """
 
-data['TransactionDate'] = pd.to_datetime(data['TransactionDate']).apply(lambda x: x.toordinal())
+    data['TransactionDate'] = pd.to_datetime(data['TransactionDate']).apply(lambda x: x.toordinal())
 
-pca = PCA(n_components=2)
+    pca = PCA(n_components=2)
 
-# Convertir las columnas restantes en variables binarias
-categorical = ['CustGender']
-new_cols = pd.get_dummies(data[categorical])
-data = pd.concat([data.drop(categorical, axis=1), new_cols], axis = 1)
-data = data.drop(["CustLocation"], axis = 1)
-data = data.dropna()
-print(data)
-data = pca.fit_transform(data)
+    # Convertir las columnas restantes en variables binarias
+    categorical = ['CustGender']
+    new_cols = pd.get_dummies(data[categorical])
+    data = pd.concat([data.drop(categorical, axis=1), new_cols], axis = 1)
+    data = data.drop(["CustLocation"], axis = 1)
+    data = data.dropna()
+    data = pca.fit_transform(data)
+    return data
 
-# Ajuste del modelo K-Means
-kmeans = KMeans(data, n_clusters=3, max_iter=100)
-kmeans.best_k(min_k=1, max_k=15)
-print("a")
+def run():
+
+    data = data_explore()
+    # Ajuste del modelo K-Means
+    kmeans = KMeans(data, n_clusters=6, max_iter=100)
+    #kmeans.best_k(min_k=1, max_k=15) 
+    centroids, clusters, wss = kmeans.fit(k=6)
+    return centroids, clusters, wss
+
+
+def graphic(centroids, clusters, wss):
+    colors = ['red', 'blue', 'green', 'orange', 'purple', "black"]
+
+    for i, cluster in enumerate(clusters):
+        for point in cluster:
+            plt.scatter(point[0], point[1], color=colors[i % len(colors)])
+        
+    plt.show()
+
+    print("a")
+
+if __name__ =="__main__":
+    run()
