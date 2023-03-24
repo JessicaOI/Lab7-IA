@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.cluster import KMeans
-from Task1_1 import run, data_explore, graphic
+from Task1_1 import run, data_explore, cluster_graphic
 
 
 def sklearn_kmeans(X, k):
@@ -10,12 +10,9 @@ def sklearn_kmeans(X, k):
     # Fit the KMeans model to the data
     kmeans.fit(X)
 
-    # Get the cluster labels and centroids
-    labels = kmeans.labels_
+
     centroids = kmeans.cluster_centers_
 
-    # Print the cluster labels and centroids
-    print(labels)
     print(centroids)
 
 
@@ -25,9 +22,10 @@ def main():
     print("Sklearn")
     sklearn_kmeans(data, k)
     print("Native implementation")
-    centroids, clusters, wss = run()
+    centroids, clusters, wss = run(data=data, k=k)
     print(centroids)
-    graphic(centroids, clusters, wss)
+    print("La creación de la gráfica puede tomar un largo tiempo (10-20min)")
+    cluster_graphic(clusters)
 
 
 

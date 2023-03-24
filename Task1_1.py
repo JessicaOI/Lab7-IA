@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
-
+import seaborn as sns
 
 
 
@@ -128,13 +128,11 @@ def data_explore():
     data = pca.fit_transform(data)
     return data
 
-def run():
-
-    data = data_explore()
+def run_kmeans(k, data):
     # Ajuste del modelo K-Means
     kmeans = KMeans(data, n_clusters=6, max_iter=100)
     #kmeans.best_k(min_k=1, max_k=15) 
-    centroids, clusters, wss = kmeans.fit(k=6)
+    centroids, clusters, wss = kmeans.fit(k=k)
     return centroids, clusters, wss
 
 
@@ -149,5 +147,27 @@ def graphic(centroids, clusters, wss):
 
     print("a")
 
+def cluster_graphic(clusters):
+    df = pd.DataFrame(columns=["Component_1", "Component_2", "No_Cluster"])
+    k = 1
+    for cluster in clusters:
+        for row in cluster:
+            row_data = [k]+list(row)
+            df.loc[len(df)] = row_data
+        k += 1
+
+    fig = plt.figure(figsize=(8, 8))
+    ax = fig.add_subplot(1, 1, 1)
+    ax.set_xlabel('Componente1')
+    ax.set_ylabel("Componente2")
+    ax.set_title("Componente principales")
+
+    color_theme = np.array(["blue", "red", "green", "black", "orange","purple", "cyan" ])
+    ax.scatter(x = df.Component_1, y = df.Component_2, c=color_theme, s=50)
+    plt.show()
+    print(0)
+
 if __name__ =="__main__":
-    run()
+    data = data_explore()
+    centroids, clusters, wss = run_kmeans(6, data)
+    cluster_graphic(clusters)
